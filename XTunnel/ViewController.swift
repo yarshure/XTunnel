@@ -10,9 +10,10 @@ import Cocoa
 
 class ViewController: NSViewController {
 
+    let x = Tunmanager()
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        x.open()
         // Do any additional setup after loading the view.
     }
 

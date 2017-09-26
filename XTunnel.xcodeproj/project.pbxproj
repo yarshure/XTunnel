@@ -11,6 +11,9 @@
 		69962D9C1F7A4460006D2B19 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69962D9B1F7A4460006D2B19 /* ViewController.swift */; };
 		69962D9E1F7A4460006D2B19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69962D9D1F7A4460006D2B19 /* Assets.xcassets */; };
 		69962DA11F7A4460006D2B19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69962D9F1F7A4460006D2B19 /* Main.storyboard */; };
+		69962DAC1F7A447F006D2B19 /* ServerUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 69962DAA1F7A447F006D2B19 /* ServerUtils.m */; };
+		69962DAE1F7A487A006D2B19 /* Tunmanager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69962DAD1F7A487A006D2B19 /* Tunmanager.swift */; };
+		69962DB01F7A496B006D2B19 /* util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69962DAF1F7A496B006D2B19 /* util.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +24,11 @@
 		69962DA01F7A4460006D2B19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		69962DA21F7A4460006D2B19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		69962DA31F7A4460006D2B19 /* XTunnel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XTunnel.entitlements; sourceTree = "<group>"; };
+		69962DA91F7A447E006D2B19 /* XTunnel-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XTunnel-Bridging-Header.h"; sourceTree = "<group>"; };
+		69962DAA1F7A447F006D2B19 /* ServerUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServerUtils.m; sourceTree = "<group>"; };
+		69962DAB1F7A447F006D2B19 /* ServerUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServerUtils.h; sourceTree = "<group>"; };
+		69962DAD1F7A487A006D2B19 /* Tunmanager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tunmanager.swift; sourceTree = "<group>"; };
+		69962DAF1F7A496B006D2B19 /* util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = util.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,12 +61,17 @@
 		69962D981F7A4460006D2B19 /* XTunnel */ = {
 			isa = PBXGroup;
 			children = (
+				69962DAB1F7A447F006D2B19 /* ServerUtils.h */,
+				69962DAA1F7A447F006D2B19 /* ServerUtils.m */,
+				69962DAF1F7A496B006D2B19 /* util.swift */,
 				69962D991F7A4460006D2B19 /* AppDelegate.swift */,
 				69962D9B1F7A4460006D2B19 /* ViewController.swift */,
+				69962DAD1F7A487A006D2B19 /* Tunmanager.swift */,
 				69962D9D1F7A4460006D2B19 /* Assets.xcassets */,
 				69962D9F1F7A4460006D2B19 /* Main.storyboard */,
 				69962DA21F7A4460006D2B19 /* Info.plist */,
 				69962DA31F7A4460006D2B19 /* XTunnel.entitlements */,
+				69962DA91F7A447E006D2B19 /* XTunnel-Bridging-Header.h */,
 			);
 			path = XTunnel;
 			sourceTree = "<group>";
@@ -95,7 +108,13 @@
 				TargetAttributes = {
 					69962D951F7A4460006D2B19 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -135,7 +154,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				69962D9C1F7A4460006D2B19 /* ViewController.swift in Sources */,
+				69962DAE1F7A487A006D2B19 /* Tunmanager.swift in Sources */,
 				69962D9A1F7A4460006D2B19 /* AppDelegate.swift in Sources */,
+				69962DB01F7A496B006D2B19 /* util.swift in Sources */,
+				69962DAC1F7A447F006D2B19 /* ServerUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,7 +285,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = XTunnel/XTunnel.entitlements;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 745WQDK4L7;
@@ -271,6 +293,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yarshure.XTunnel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "XTunnel/XTunnel-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -279,7 +303,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = XTunnel/XTunnel.entitlements;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 745WQDK4L7;
@@ -287,6 +311,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yarshure.XTunnel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "XTunnel/XTunnel-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
