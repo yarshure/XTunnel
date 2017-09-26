@@ -19,7 +19,7 @@ class Tunmanager: NSObject {
     var utunName: String?
     
     /// A dispatch source for the UTUN interface socket.
-    var utunSource: DispatchSource?
+    var utunSource: DispatchSourceRead?
     
     /// A flag indicating if reads from the UTUN interface are suspended.
     var isSuspended = false
@@ -28,6 +28,7 @@ class Tunmanager: NSObject {
         guard setupVirtualInterface(address: "10.10.0.1") else {
             return false
         }
+        //tunnelAddress = address
         return false
     }
     /// Create a UTUN interface.
@@ -93,8 +94,142 @@ class Tunmanager: NSObject {
     }
     /// Start reading packets from the UTUN interface.
     func startTunnelSource(utunSocket: Int32) {
+        guard setSocketNonBlocking(utunSocket) else { return }
+        //fixme
+        //DispatchSource.makeReadSource(fileDescriptor: UInt(utunSocket))
+        let newSource = DispatchSource.makeReadSource(fileDescriptor: utunSocket)
+        newSource.setCancelHandler  {
+            close(utunSocket)
+            return
+
+        }
+        newSource.setEventHandler {
+            self.readPackets()
+        }
+        newSource.resume()
+        utunSource = newSource as! DispatchSource
+
     }
     
+    /// Read packets from the UTUN interface.
+    func readPackets() {
+        guard let source = utunSource else { return }
+        var packets = [NSData]()
+        var protocols = [NSNumber]()
+        
+        // We use a 2-element iovec list. The first iovec points to the protocol number of the packet, the second iovec points to the buffer where the packet should be read.
+        var buffer = [UInt8](repeating:0, count: 8192)
+        var protocolNumber: UInt32 = 0
+        var iovecList = [ iovec(iov_base: &protocolNumber, iov_len: MemoryLayout.size(ofValue: protocolNumber)), iovec(iov_base: &buffer, iov_len: buffer.count) ]
+        let iovecListPointer = UnsafeBufferPointer<iovec>(start: &iovecList, count: iovecList.count)
+        let utunSocket = Int32(source.handle)
+        
+        repeat {
+            let readCount = readv(utunSocket, iovecListPointer.baseAddress, Int32(iovecListPointer.count))
+            
+            guard readCount > 0 || errno == EAGAIN else {
+                if  readCount < 0 {
+                    let errorString = String(cString: strerror(errno))
+                    simpleTunnelLog("Got an error on the utun socket: \(errorString)")
+                }
+                source.cancel()
+                break
+            }
+            
+            guard readCount > MemoryLayout.size(ofValue: protocolNumber) else { break }
+            
+            if protocolNumber.littleEndian == protocolNumber {
+                protocolNumber = protocolNumber.byteSwapped
+            }
+            protocols.append(NSNumber(value: protocolNumber))
+            packets.append(NSData(bytes: &buffer, length: readCount - MemoryLayout.size(ofValue: protocolNumber)))
+            
+            // Buffer up packets so that we can include multiple packets per message. Once we reach a per-message maximum send a "packets" message.
+            if packets.count == 32 {
+                //fixme
+                simpleTunnelLog("Got packets")
+                //tunnel?.sendPackets(packets, protocols: protocols, forConnection: identifier)
+                packets = [NSData]()
+                protocols = [NSNumber]()
+                if isSuspended { break } // If the entire message could not be sent and the connection is suspended, stop reading packets.
+            }
+        } while true
+        
+        // If there are unsent packets left over, send them now.
+        if packets.count > 0 {
+            simpleTunnelLog("Got packets \(packets)")
+            //tunnel?.sendPackets(packets, protocols: protocols, forConnection: identifier)
+        }
+    }
+
+//    // MARK: Connection
+//
+    /// Abort the connection.
+    func abort(error: Int = 0) {
+
+        closeConnection()
+    }
+//
+    /// Close the connection.
+    func closeConnection() {
+        //super.closeConnection(direction)
+
+        utunSource!.cancel()
+        utunName = nil
+//        if currentCloseDirection == .All {
+//            if utunSource != nil {
+//                dispatch_source_cancel(utunSource!)
+//            }
+//            // De-allocate the address.
+//            if tunnelAddress != nil {
+//                ServerTunnel.configuration.addressPool?.deallocateAddress(tunnelAddress!)
+//            }
+//            utunName = nil
+//        }
+    }
+//
+    /// Stop reading packets from the UTUN interface.
+    func suspend() {
+        isSuspended = true
+        if let source = utunSource {
+            source.suspend()
+        }
+    }
+
+    /// Resume reading packets from the UTUN interface.
+   func resume() {
+        isSuspended = false
+        if let source = utunSource {
+            source.resume()
+            readPackets()
+        }
+    }
+
+    /// Write packets and associated protocols to the UTUN interface.
+    func sendPackets(packets: [NSData], protocols: [NSNumber]) {
+        guard let source = utunSource else { return }
+        let utunSocket = Int32(source.handle)
+
+        for (index, packet) in packets.enumerated() {
+            guard index < protocols.count else { break }
+
+            var protocolNumber = protocols[index].uint32Value.bigEndian
+
+            let buffer = UnsafeMutableRawPointer(mutating: packet.bytes)
+            var iovecList = [ iovec(iov_base: &protocolNumber, iov_len: MemoryLayout.size(ofValue: protocolNumber)), iovec(iov_base: buffer, iov_len: packet.length) ]
+
+            let writeCount = writev(utunSocket, &iovecList, Int32(iovecList.count))
+            if writeCount < 0 {
+                
+                let errorString = String(cString: strerror(errno))
+                simpleTunnelLog("Got an error while writing to utun: \(errorString)")
+                
+            }
+            else if writeCount < packet.length + MemoryLayout.size(ofValue: protocolNumber) {
+                simpleTunnelLog("Wrote \(writeCount) bytes of a \(packet.length) byte packet to utun")
+            }
+        }
+    }
     
     
 }
