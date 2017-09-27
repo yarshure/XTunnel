@@ -30,6 +30,7 @@ class Tunmanager: NSObject {
         }
         //tunnelAddress = address
         TSIPStack.stack.outputBlock = { ps,ns in
+            simpleTunnelLog("tun recv\(ps as [NSData])")
             self.sendPackets(packets:ps as [NSData] , protocols: ns)
         }
         return false
