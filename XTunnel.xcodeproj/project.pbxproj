@@ -14,7 +14,28 @@
 		69962DAC1F7A447F006D2B19 /* ServerUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 69962DAA1F7A447F006D2B19 /* ServerUtils.m */; };
 		69962DAE1F7A487A006D2B19 /* Tunmanager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69962DAD1F7A487A006D2B19 /* Tunmanager.swift */; };
 		69962DB01F7A496B006D2B19 /* util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69962DAF1F7A496B006D2B19 /* util.swift */; };
+		69962DB31F7B8448006D2B19 /* tun2socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69962DB21F7B83AF006D2B19 /* tun2socks.framework */; };
+		69962DB41F7B8450006D2B19 /* lwip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69962DB11F7B83AF006D2B19 /* lwip.framework */; };
+		69962DB51F7B85D1006D2B19 /* lwip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69962DB11F7B83AF006D2B19 /* lwip.framework */; };
+		69962DB61F7B85D1006D2B19 /* lwip.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 69962DB11F7B83AF006D2B19 /* lwip.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		69962DB81F7B85D3006D2B19 /* tun2socks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69962DB21F7B83AF006D2B19 /* tun2socks.framework */; };
+		69962DB91F7B85D3006D2B19 /* tun2socks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 69962DB21F7B83AF006D2B19 /* tun2socks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		69962DB71F7B85D1006D2B19 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				69962DB61F7B85D1006D2B19 /* lwip.framework in Embed Frameworks */,
+				69962DB91F7B85D3006D2B19 /* tun2socks.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		69962D961F7A4460006D2B19 /* XTunnel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XTunnel.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -29,6 +50,8 @@
 		69962DAB1F7A447F006D2B19 /* ServerUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServerUtils.h; sourceTree = "<group>"; };
 		69962DAD1F7A487A006D2B19 /* Tunmanager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tunmanager.swift; sourceTree = "<group>"; };
 		69962DAF1F7A496B006D2B19 /* util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = util.swift; sourceTree = "<group>"; };
+		69962DB11F7B83AF006D2B19 /* lwip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = lwip.framework; sourceTree = "<group>"; };
+		69962DB21F7B83AF006D2B19 /* tun2socks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = tun2socks.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +59,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69962DB51F7B85D1006D2B19 /* lwip.framework in Frameworks */,
+				69962DB41F7B8450006D2B19 /* lwip.framework in Frameworks */,
+				69962DB31F7B8448006D2B19 /* tun2socks.framework in Frameworks */,
+				69962DB81F7B85D3006D2B19 /* tun2socks.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +88,8 @@
 		69962D981F7A4460006D2B19 /* XTunnel */ = {
 			isa = PBXGroup;
 			children = (
+				69962DB11F7B83AF006D2B19 /* lwip.framework */,
+				69962DB21F7B83AF006D2B19 /* tun2socks.framework */,
 				69962DAB1F7A447F006D2B19 /* ServerUtils.h */,
 				69962DAA1F7A447F006D2B19 /* ServerUtils.m */,
 				69962DAF1F7A496B006D2B19 /* util.swift */,
@@ -86,6 +115,7 @@
 				69962D921F7A4460006D2B19 /* Sources */,
 				69962D931F7A4460006D2B19 /* Frameworks */,
 				69962D941F7A4460006D2B19 /* Resources */,
+				69962DB71F7B85D1006D2B19 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -289,6 +319,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 745WQDK4L7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/XTunnel",
+				);
 				INFOPLIST_FILE = XTunnel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yarshure.XTunnel;
@@ -307,6 +341,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 745WQDK4L7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/XTunnel",
+				);
 				INFOPLIST_FILE = XTunnel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yarshure.XTunnel;

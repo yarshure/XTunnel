@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-
+import tun2socks
 class Tunmanager: NSObject {
 
     // MARK: Properties
@@ -29,6 +29,9 @@ class Tunmanager: NSObject {
             return false
         }
         //tunnelAddress = address
+        TSIPStack.stack.outputBlock = { ps,ns in
+            self.sendPackets(packets:ps as [NSData] , protocols: ns)
+        }
         return false
     }
     /// Create a UTUN interface.
@@ -141,14 +144,20 @@ class Tunmanager: NSObject {
             if protocolNumber.littleEndian == protocolNumber {
                 protocolNumber = protocolNumber.byteSwapped
             }
-            protocols.append(NSNumber(value: protocolNumber))
-            packets.append(NSData(bytes: &buffer, length: readCount - MemoryLayout.size(ofValue: protocolNumber)))
+            if protocolNumber == AF_INET {
+                protocols.append(NSNumber(value: protocolNumber))
+                packets.append(NSData(bytes: &buffer, length: readCount - MemoryLayout.size(ofValue: protocolNumber)))
+
+            }else {
+                //UDP
+            }
             
             // Buffer up packets so that we can include multiple packets per message. Once we reach a per-message maximum send a "packets" message.
             if packets.count == 32 {
                 //fixme
                 simpleTunnelLog("Got packets")
-                //tunnel?.sendPackets(packets, protocols: protocols, forConnection: identifier)
+                
+                sendpacket(packets: packets)
                 packets = [NSData]()
                 protocols = [NSNumber]()
                 if isSuspended { break } // If the entire message could not be sent and the connection is suspended, stop reading packets.
@@ -158,10 +167,17 @@ class Tunmanager: NSObject {
         // If there are unsent packets left over, send them now.
         if packets.count > 0 {
             simpleTunnelLog("Got packets \(packets)")
+            sendpacket(packets: packets)
             //tunnel?.sendPackets(packets, protocols: protocols, forConnection: identifier)
         }
     }
 
+    func sendpacket(packets:[NSData])  {
+        for p in packets {
+            TSIPStack.stack.received(packet: p as Data)
+        }
+        
+    }
 //    // MARK: Connection
 //
     /// Abort the connection.

@@ -7,12 +7,17 @@
 //
 
 import Cocoa
-
-class ViewController: NSViewController {
+import tun2socks
+class ViewController: NSViewController,TSIPStackDelegate {
+    func didAcceptTCPSocket(_ sock: TSTCPSocket) {
+        print("incoming socket")
+    }
+    
 
     let x = Tunmanager()
     override func viewDidLoad() {
         super.viewDidLoad()
+        TSIPStack.stack.delegate = self
         x.open()
         // Do any additional setup after loading the view.
     }
